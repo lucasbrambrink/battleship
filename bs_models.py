@@ -1,5 +1,31 @@
-##title: bs_models
+## BATTLESHIP MODELS ##
+import datetime
 
+
+
+class Boat:
+	def __init__(self,name):
+		length_values = {"Cruiser": 2, "Destroyer": 3, "Submarine": 4, "Aircraftcarrier": 5}
+		self.name = name
+		self.length = length_values[name]
+		self.health = self.length
+
+	def hit_boat(self):
+		self.health -= 1
+		if self.health == 0:
+			return False
+		else:
+			return True
+
+
+class Player:
+	def __init__(self,name):
+		self.name = name
+		self.latest_sign_in = datetime.datetime.now()
+
+	def fetch_ongoing_games(self):
+		##check database for games with Uid
+		pass
 
 
 class GameBoard:
@@ -14,10 +40,6 @@ class GameBoard:
 			for col in range(0,self.size):
 				row.append("~ ")
 			self.board.append(row)
-
-	def print_board(self):
-		for row in self.board:
-			print("".join(row))
 
 	def shoot_cell(self,x,y):##take arguments starting from 1 for users
 		self.board[y-1][x-1] = "X "
@@ -55,41 +77,8 @@ class GameBoard:
 				boat_length -= 1
 		return True
 
-
-
-
-
-
-class Boat:
-	def __init__(self,name):
-		length_values = {"Cruiser": 2, "Destroyer": 3, "Submarine": 4, "Aircraftcarrier": 5}
-		self.name = name
-		self.length = length_values[name]
-		self.health = self.length
-	def 
-
-
-
-##Testing##
-
-cruiser = Boat("Cruiser")
-submarine = Boat("Submarine")
-
-current_game = GameBoard()
-current_game.make_board()
-#in Game
-
-#current_game.place_boat(cruiser,3,3,'right')
-#current_game.place_boat(submarine,8,8,'up')
-#current_game.shoot_cell(8,7)
-
-print(current_game.run_placement_check(5,3,3,[0,1]))
-
-
-
-
-
-current_game.print_board()
+	def place_boats(self):
+		pass
 
 
 
