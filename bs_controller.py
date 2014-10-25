@@ -52,13 +52,12 @@ class Controller:
 		## [1.] AI Places boats
 		array = ["cruiser1","cruiser2","destroyer1","destroyer2","submarine1","aircraftcarrier1"]
 		self.computer.place_boats(self.computer_board,array)
-		bs_views.print_both_boards(self.computer_board.board,self.shooting_board.board)
-			
-		## [2.] Player places boats
-		#self.place_all_boats(array)
 		
+		## [2.] Player places boats
+		array = ["cruiser1","cruiser2","destroyer1","destroyer2","submarine1","aircraftcarrier1"]
+		self.place_all_boats(array)
 		## [3.] Initalize Turn-Based Game
-		#self.run_game()
+		self.run_game()
 
 
 
@@ -87,11 +86,13 @@ class Controller:
 	def turn(self):
 		bs_views.print_both_boards(self.current_game.board,self.shooting_board.board)
 		x,y = bs_views.take_shot()
-		event = self.shooting_board.take_turn(x,y)
+		event = self.computer_board.take_turn(x,y)
 		if event == "hit":
+			self.shooting_board.board[y][x] = t.bright_red("X ")
 			bs_views.print_both_boards(self.current_game.board,self.shooting_board.board)
 			bs_views.show_result("He's been hit!")
 		elif event == "miss":
+			self.shooting_board.take_turn(x,y)
 			bs_views.print_both_boards(self.current_game.board,self.shooting_board.board)
 			bs_views.show_result("You missed!")
 		else:
@@ -101,6 +102,7 @@ class Controller:
 	## use of recursion --> passing in updated array until base-case is reached
 	def place_all_boats(self,remaining_boats):
 		if len(remaining_boats) == 0:
+			print(remaining_boats)
 			bs_views.print_both_boards(self.current_game.board,self.shooting_board.board)
 			bs_views.placed_all_boats()
 		else:
@@ -122,7 +124,7 @@ class Controller:
 					remaining_boats.remove(boat.name+"2")
 			self.place_all_boats(remaining_boats)
 
-		
+
 			
 
 

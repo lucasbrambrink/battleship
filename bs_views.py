@@ -68,7 +68,7 @@ def place_boat(boat_name):
 		orientation = input("""How would you like to orient the boat?
 			choose [left, right, up or down]
 			""")
-	return x,y,orientation
+	return x-1,y-1,orientation
 
 def ask_boat(array):
 	print("\nYour Arsenal:\n")

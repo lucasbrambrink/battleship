@@ -17,6 +17,7 @@ class Boat:
 			if name == key:
 				self.length = length_values[name]
 		self.health = self.length
+		self.coordinates = []
 
 	def hit_boat(self):
 		self.health -= 1
@@ -56,11 +57,9 @@ class AI:
 		self.array_successes.append(success)
 
 	def place_boats(self,board,remaining_boats): ##board is object
-		print(board)
 		## get ready for some recursion
 		if len(remaining_boats) == 0:
-			print("TIMESTAMP")
-			print (board)
+			print("computer complete")
 			return board
 		else:
 			boat = Boat(remaining_boats[0][:-1]) ## simply take the first one 
@@ -75,12 +74,6 @@ class AI:
 				except:
 					remaining_boats.remove(boat.name+"2")
 			self.place_boats(board,remaining_boats)
-
-
-
-
-
-
 
 
 class Success:
@@ -132,6 +125,7 @@ class GameBoard:
 				self.board[y_cell][x_cell] = t.yellow(build_specification[orientation][3])
 			else:
 				self.board[y_cell][x_cell] = t.yellow(build_specification[orientation][-1])
+			boat.coordinates.append((y_cell,x_cell))
 			length -= 1
 			y_cell += int(build_specification[orientation][0])
 			x_cell += int(build_specification[orientation][1])
