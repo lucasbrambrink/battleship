@@ -8,7 +8,6 @@ t = Terminal()
 ## AI 
 
 
-
 class Boat:
 	def __init__(self,name):
 		length_values = {"cruiser": 2, "destroyer": 3, "submarine": 4, "aircraftcarrier": 5}
@@ -25,11 +24,14 @@ class Boat:
 			return False
 		else:
 			return True
+	def assign_coordinates(self,x,y):
+		self.coordinates.append((x,y))
 
 class AI:
 	def __init__(self):
 		self.tries = []
 		self.array_successes = []
+		self.boats = []
 
 	def _random_cell(self):
 		return (random.randint(0,9),random.randint(0,9))
@@ -69,6 +71,8 @@ class AI:
 			if test_boat == "pass":
 				## actually update the board
 				board.place_boat(boat,x,y,orientation)
+				boat.assign_coordinates(x,y)
+				self.boats.append(boat)
 				try:
 					remaining_boats.remove(boat.name+"1")
 				except:

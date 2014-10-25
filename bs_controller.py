@@ -5,13 +5,14 @@ import random
 from blessings import Terminal
 t = Terminal()
 
-class Controller:
+class Battleship:
 	def __init__(self):
 		self.name = None
 		self.current_game = None
 		self.shooting_board = None
 		self.ai_board = None
 		self.computer = None
+		self.player_boats = []
 
 	def sign_in(self):
 		name = bs_views.sign_in()
@@ -101,6 +102,7 @@ class Controller:
 
 	## use of recursion --> passing in updated array until base-case is reached
 	def place_all_boats(self,remaining_boats):
+		print(self.player_boats)
 		if len(remaining_boats) == 0:
 			print(remaining_boats)
 			bs_views.print_both_boards(self.current_game.board,self.shooting_board.board)
@@ -118,6 +120,7 @@ class Controller:
 				## actually update the board
 				bs_views.print_both_boards(self.current_game.board,self.shooting_board.board)
 				self.current_game.place_boat(boat,x,y,orientation)
+				self.player_boats.append(boat)
 				try:
 					remaining_boats.remove(boat.name+"1")
 				except:
@@ -128,4 +131,4 @@ class Controller:
 			
 
 
-Controller().sign_in()
+Battleship().sign_in()
