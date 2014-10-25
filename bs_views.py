@@ -118,6 +118,9 @@ def take_shot():
 def sunk_ship(name):
 	input("The computer sunk your"+name+"!!!")
 
+def sunk_opponent_ship(name):
+	input("You sunk the computer's"+name+"!!!!")
+
 
 ## BONUS
 

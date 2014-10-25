@@ -80,7 +80,7 @@ class Battleship:
 					if cell == coordinate:
 						name = boat.name
 						if boat.take_hit():
-							bs_views.sunk_ship()
+							bs_views.sunk_ship(boat.name)
 			bs_views.show_result("Your "+name+" has been hit!")
 		elif event == "miss":
 			bs_views.print_both_boards(self.current_game.board,self.shooting_board.board)
@@ -99,6 +99,11 @@ class Battleship:
 		if event == "hit":
 			self.shooting_board.board[y][x] = t.bright_red("X ")
 			bs_views.print_both_boards(self.current_game.board,self.shooting_board.board)
+			for boat in self.computer.boats:
+				for coordinate in boat.coordinates:
+					if cell == coordinate:
+						if boat.take_hit():
+							bs_views.sunk_opponent(boat.name)
 			bs_views.show_result("He's been hit!")
 		elif event == "miss":
 			self.shooting_board.take_turn(x,y)
