@@ -33,6 +33,10 @@ class AI:
 	def _random_cell(self):
 		return (random.randint(0,9),random.randint(0,9))
 
+	def _random_orientation(self):
+		orientations = {"1":"up","2":"down","3":"right","4":"left"}
+		return orientations[str(random.randint(1,4))]
+
 	def take_turn(self):
 		cell = self._random_cell()
 		if len(self.tries) != 0:
@@ -50,6 +54,32 @@ class AI:
 
 	def accept_success(self,success): ##receives as object
 		self.array_successes.append(success)
+
+	def place_boats(self,board,remaining_boats): ##board is object
+		## get ready for some recursion
+		if len(remaining_boats) == 0:
+			return board
+		else:
+			boat = Boat(remaining_boats[0][:-1]) ## simply take the first one 
+			x,y = self._random_cell()
+			orientation = self._random_orientation()
+			test_boat = board.improper_boat_check(boat.length,x,y,board.get_orientation_array(orientation))
+			if test_boat == "pass":
+				## actually update the board
+				board.place_boat(boat,x,y,orientation)
+				try:
+					remaining_boats.remove(boat.name+"1")
+				except:
+					remaining_boats.remove(boat.name+"2")
+			else:
+				self.place_boats(board,remaining_boats)
+
+
+
+
+
+
+
 
 class Success:
 	def __init__(self, cell):

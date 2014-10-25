@@ -44,17 +44,18 @@ class Controller:
 
 		##Initialize AI              (...spooky. don't worry, he's not 777)
 		self.computer = bs_models.AI()
-
-
-
+		self.computer_board = bs_models.GameBoard()
 		
 
 		##Start Game:
+		## [1.] AI Places boats
 		array = ["cruiser1","cruiser2","destroyer1","destroyer2","submarine1","aircraftcarrier1"]
+		self.computer.place_boats(self.computer_board,array)
+
+		## [2.] Player places boats
 		#self.place_all_boats(array)
 		
-
-		##Run Game:
+		## [3.] Initalize Turn-Based Game
 		self.run_game()
 
 
