@@ -2,6 +2,8 @@
 import bs_views
 import bs_models
 import random
+from blessings import Terminal
+t = Terminal()
 
 class Controller:
 	def __init__(self):
@@ -48,7 +50,7 @@ class Controller:
 
 		##Start Game:
 		array = ["cruiser1","cruiser2","destroyer1","destroyer2","submarine1","aircraftcarrier1"]
-		self.place_all_boats(array)
+		#self.place_all_boats(array)
 		##Run Game:
 		self.run_game()
 
@@ -75,8 +77,16 @@ class Controller:
 	def turn(self):
 		bs_views.print_both_boards(self.current_game.board,self.shooting_board.board)
 		x,y = bs_views.take_shot()
-		self.shooting_board.board[y-1][x-1] = "X"
-
+		event = self.shooting_board.take_turn(x,y)
+		if event == "hit":
+			bs_views.print_both_boards(self.current_game.board,self.shooting_board.board)
+			bs_views.show_result("He's been hit!")
+		elif event == "miss":
+			bs_views.print_both_boards(self.current_game.board,self.shooting_board.board)
+			bs_views.show_result("You missed!")
+		else:
+			bs_views.show_result("You already tried there!")
+			self.turn()
 
 
 	def place_all_boats(self,remaining_boats):

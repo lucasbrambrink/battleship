@@ -1,9 +1,11 @@
 ## VIEWS FOR BATTLESHIP GAME ##
 from blessings import Terminal
 
+t = Terminal()
+
 ## GLOBAL FUNCTIONS
 def clear_screen():
-	print (Terminal().clear)
+	print (t.clear)
 
 def sign_in():
 	clear_screen()
@@ -38,17 +40,12 @@ def main_menu():
 ## IN-GAME VIEWS
 
 
-def print_board(game_board):
-	clear_screen()
-	for row in game_board:
-		print("".join(row))
-
 def print_both_boards(game_board1,game_board2):
 	clear_screen()
 	for i in range(0,len(game_board1)):
 		left_margin = "        "
 		separator = "             |             "
-		row = left_margin+"".join(game_board1[i])+separator+"".join(game_board2[i])
+		row = left_margin+"".join(game_board1[i])+t.yellow(separator)+"".join(game_board2[i])
 		print(row)
 
 def place_boat(boat_name):
@@ -78,15 +75,14 @@ def ask_boat(array):
 	for item in array:
 		print("    >>>   "+item[:-1]),
 	print("\n    >>>   exit")
-	boat = input("\n\nPlease choose a boat to place:\n")
-	null = 0
-	for item in array:
-		if boat == item[:-1]:
-			return boat
-		if boat == 'exit':
-			quit()
-	print("Invalid boat!")
-	ask_boat(array)
+	while True:
+		boat = input("\n\nPlease choose a boat to place:\n")
+		for item in array:
+			if boat == item[:-1]:
+				return boat
+			if boat == 'exit':
+				quit()
+		print("Invalid boat!")
 
 def not_water():
 	input("There is something in the way!")
@@ -126,6 +122,9 @@ def take_shot():
 
 def stall():
 	return input("")
+
+def show_result(result):
+	input(result)
 
 def print_statement(statement):
 	print(statement)

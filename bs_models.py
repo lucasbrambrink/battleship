@@ -1,5 +1,7 @@
 ## BATTLESHIP MODELS ##
 import datetime
+from blessings import Terminal
+t = Terminal()
 
 ##metaprogramming
 ## AI 
@@ -18,6 +20,7 @@ class Boat:
 				i += 1
 		if i != 3:
 			print("OH NO!!")
+			print(name)
 			quit()
 		self.health = self.length
 
@@ -71,9 +74,6 @@ class Success:
 
 
 
-
-
-
 class Player:
 	def __init__(self,name):
 		self.name = name
@@ -94,7 +94,7 @@ class GameBoard:
 		for row in range(0,self.size):
 			row = []
 			for col in range(0,self.size):
-				row.append("~ ")
+				row.append(t.blue("~ "))
 			self.board.append(row)
 
 	def place_boat(self,boat,x,y,orientation): ##must be boat object
@@ -103,11 +103,11 @@ class GameBoard:
 		x_cell,y_cell = (x-1),(y-1)
 		while length > 0:
 			if length == boat.length:
-				self.board[y_cell][x_cell] = build_specification[orientation][2]
+				self.board[y_cell][x_cell] = t.yellow(build_specification[orientation][2])
 			elif length == 1:
-				self.board[y_cell][x_cell] = build_specification[orientation][3]
+				self.board[y_cell][x_cell] = t.yellow(build_specification[orientation][3])
 			else:
-				self.board[y_cell][x_cell] = build_specification[orientation][-1]
+				self.board[y_cell][x_cell] = t.yellow(build_specification[orientation][-1])
 			length -= 1
 			y_cell += int(build_specification[orientation][0])
 			x_cell += int(build_specification[orientation][1])
@@ -126,7 +126,7 @@ class GameBoard:
 		while boat_length > 0:
 			if x < 0 or x > 10 or y < 0 or y > 10:
 				return 'outside_scope'
-			elif test_board_array[y][x] != "~ ":
+			elif test_board_array[y][x] != t.blue("~ "):
 				return 'not_water'
 			else:
 				y += int(orientation_array[0])
@@ -136,11 +136,11 @@ class GameBoard:
 
 	def take_turn(self,x,y):
 		x_cell,y_cell = x-1,y-1
-		if self.board[y_cell][x_cell] != "~ " or self.board[y_cell][x_cell] != "X":
-			self.board[y-1][x-1] = "X "
+		if self.board[y_cell][x_cell] != t.blue("~ ") and self.board[y_cell][x_cell] != t.bright_red("X ") and self.board[y_cell][x_cell] != t.cyan("X "):
+			self.board[y-1][x-1] = t.bright_red("X ")
 			return 'hit'
-		elif self.board[y_cell][x_cell] == "~ ":
-			self.board[y-1][x-1] = "X "
+		elif self.board[y_cell][x_cell] == t.blue("~ "):
+			self.board[y-1][x-1] = t.cyan("X ")
 			return 'miss'
 		else:
 			return 'duplicate'
