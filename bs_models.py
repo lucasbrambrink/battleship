@@ -1,13 +1,24 @@
 ## BATTLESHIP MODELS ##
 import datetime
 
+##metaprogramming
+## AI 
+
 
 
 class Boat:
 	def __init__(self,name):
-		length_values = {"Cruiser": 2, "Destroyer": 3, "Submarine": 4, "Aircraftcarrier": 5}
+		length_values = {"cruiser": 2, "destroyer": 3, "submarine": 4, "aircraftcarrier": 5}
 		self.name = name
-		self.length = length_values[name]
+		i = 0
+		for key in length_values:
+			if name == key:
+				self.length = length_values[name]
+			else:
+				i += 1
+		if i != 3:
+			print("OH NO!!")
+			quit()
 		self.health = self.length
 
 	def hit_boat(self):
@@ -16,6 +27,51 @@ class Boat:
 			return False
 		else:
 			return True
+
+class AI:
+	def __init__(self):
+		self.tries = []
+		self.array_successes = []
+
+	def _random_cell(self):
+		return (random.randint(0,9),random.randint(0,9))
+
+	def take_turn(self):
+		cell = self._random_cell()
+		if len(self.tries) != 0:
+			i = 0
+			while i < len(self.tries):
+				if self.tries[i] == cell:
+					new_cell = self._random_cell()
+					i = 0
+				else:
+					i += 1
+		if len(self.array_successes) != 0:
+			for i in range(0,len(self.array_successes)):
+				try_this = self.array_successes[i].check_periphery() 
+				if try_this != None:
+					self.array_successes[i].periphery.append(try_this)
+					return try_this
+		return cell
+
+	def accept_success(self,success): ##receives as object
+		self.array_successes.append(success)
+
+class Success:
+	def __init__(self, cell):
+		self.cell = None
+		self.periphery = []
+
+	def check_periphery(self):
+		if len(self.periphery) < 9:
+			tries = {"1": (-1,-1),"2":(-1,0),"3":(-1,1),"4":(0,1),"5":(1,1),"6":(0,1),"7":(-1,1),"8":(0,-1)}
+			attempt = str(random.randint(len(self.periphery),8))
+			return tries[attempt]
+		return None
+
+
+
+
 
 
 class Player:
@@ -41,44 +97,56 @@ class GameBoard:
 				row.append("~ ")
 			self.board.append(row)
 
-	def shoot_cell(self,x,y):##take arguments starting from 1 for users
-		self.board[y-1][x-1] = "X "
-
-
 	def place_boat(self,boat,x,y,orientation): ##must be boat object
 		build_specification = {"left":[0,-1,"> ","< ","H "],"right":[0,1,"< ","> ","I "],"up":[-1,0,"V ","A ","H "],"down":[1,0,"A ","V ","H "]}
 		length = boat.length
 		x_cell,y_cell = (x-1),(y-1)
-		if self.run_placement_check(length,x_cell,y_cell,build_specification[orientation]):
-			while length > 0:
-				if length == boat.length:
-					self.board[y_cell][x_cell] = build_specification[orientation][2]
-				elif length == 1:
-					self.board[y_cell][x_cell] = build_specification[orientation][3]
-				else:
-					self.board[y_cell][x_cell] = build_specification[orientation][-1]
-					# if orientation == "up" or orientation == "down":
-					# 	self.board[y_cell][x_cell-1] = "~"
-				length -= 1
-				y_cell += int(build_specification[orientation][0])
-				x_cell += int(build_specification[orientation][1])
-			return True
-		else:
-			return False
-
-	def run_placement_check(self,boat_length,x,y,orientation_array):
-		test_board_array = self.board
-		while boat_length > 0:
-			if x < 0 or x > 10 or y < 0 or y > 10 or test_board_array[y][x] != "~ ":
-				return False
+		while length > 0:
+			if length == boat.length:
+				self.board[y_cell][x_cell] = build_specification[orientation][2]
+			elif length == 1:
+				self.board[y_cell][x_cell] = build_specification[orientation][3]
 			else:
-				y += orientation_array[0]
-				x += orientation_array[1]
-				boat_length -= 1
+				self.board[y_cell][x_cell] = build_specification[orientation][-1]
+			length -= 1
+			y_cell += int(build_specification[orientation][0])
+			x_cell += int(build_specification[orientation][1])
 		return True
 
-	def place_boats(self):
-		pass
+	def get_orientation_array(self,orientation):
+		build_specification = {"left":[0,-1,"> ","< ","H "],"right":[0,1,"< ","> ","I "],"up":[-1,0,"V ","A ","H "],"down":[1,0,"A ","V ","H "]}
+		return build_specification[orientation]
+
+
+	## This method returns TRUE if you CANT place the boat
+	def improper_boat_check(self,boat_length,x,y,orientation_array):
+		test_board_array = self.board
+		x -= 1
+		y -= 1
+		while boat_length > 0:
+			if x < 0 or x > 10 or y < 0 or y > 10:
+				return 'outside_scope'
+			elif test_board_array[y][x] != "~ ":
+				return 'not_water'
+			else:
+				y += int(orientation_array[0])
+				x += int(orientation_array[1])
+				boat_length -= 1
+		return 'pass'
+
+	def take_turn(self,x,y):
+		x_cell,y_cell = x-1,y-1
+		if self.board[y_cell][x_cell] != "~ " or self.board[y_cell][x_cell] != "X":
+			self.board[y-1][x-1] = "X "
+			return 'hit'
+		elif self.board[y_cell][x_cell] == "~ ":
+			self.board[y-1][x-1] = "X "
+			return 'miss'
+		else:
+			return 'duplicate'
+
+		
+
 
 
 
