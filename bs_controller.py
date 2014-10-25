@@ -88,7 +88,7 @@ class Controller:
 			bs_views.show_result("You already tried there!")
 			self.turn()
 
-
+	## use of recursion --> passing in updated array each time until base-case is reached
 	def place_all_boats(self,remaining_boats):
 		if len(remaining_boats) == 0:
 			bs_views.print_both_boards(self.current_game.board,self.shooting_board.board)
@@ -103,6 +103,7 @@ class Controller:
 			elif test_boat == "not_water":
 				bs_views.not_water()
 			elif test_boat == "pass":
+				## actually update the board
 				bs_views.print_both_boards(self.current_game.board,self.shooting_board.board)
 				self.current_game.place_boat(boat,x,y,orientation)
 				try:
