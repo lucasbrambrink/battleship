@@ -56,7 +56,8 @@ class Battleship:
 		
 		## [2.] Player places boats
 		array = ["cruiser1","cruiser2","destroyer1","destroyer2","submarine1","aircraftcarrier1"]
-		self.place_all_boats(array)
+		#self.place_all_boats(array)
+		self.computer.place_boats(self.current_game,array)
 		## [3.] Initalize Turn-Based Game
 		self.run_game()
 
@@ -104,7 +105,6 @@ class Battleship:
 	def place_all_boats(self,remaining_boats):
 		print(self.player_boats)
 		if len(remaining_boats) == 0:
-			print(remaining_boats)
 			bs_views.print_both_boards(self.current_game.board,self.shooting_board.board)
 			bs_views.placed_all_boats()
 		else:

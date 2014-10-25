@@ -61,7 +61,6 @@ class AI:
 	def place_boats(self,board,remaining_boats): ##board is object
 		## get ready for some recursion
 		if len(remaining_boats) == 0:
-			print("computer complete")
 			return board
 		else:
 			boat = Boat(remaining_boats[0][:-1]) ## simply take the first one 
@@ -155,12 +154,12 @@ class GameBoard:
 		return 'pass'
 
 	def take_turn(self,x,y):
-		x_cell,y_cell = x-1,y-1
+		x_cell,y_cell = x,y
 		if self.board[y_cell][x_cell] != t.blue("~ ") and self.board[y_cell][x_cell] != t.bright_red("X ") and self.board[y_cell][x_cell] != t.cyan("X "):
-			self.board[y-1][x-1] = t.bright_red("X ")
+			self.board[y_cell][x_cell] = t.bright_red("X ")
 			return 'hit'
 		elif self.board[y_cell][x_cell] == t.blue("~ "):
-			self.board[y-1][x-1] = t.cyan("X ")
+			self.board[y_cell][x_cell] = t.cyan("X ")
 			return 'miss'
 		else:
 			return 'duplicate'
