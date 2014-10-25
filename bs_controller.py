@@ -56,8 +56,8 @@ class Battleship:
 		
 		## [2.] Player places boats
 		array = ["cruiser1","cruiser2","destroyer1","destroyer2","submarine1","aircraftcarrier1"]
-		#self.place_all_boats(array)
-		self.computer.place_boats(self.current_game,array)
+		self.place_all_boats(array)
+		#self.computer.place_boats(self.current_game,array)
 		## [3.] Initalize Turn-Based Game
 		self.run_game()
 
@@ -75,7 +75,13 @@ class Battleship:
 		event = self.current_game.take_turn(cell[1],cell[0])
 		if event == "hit":
 			bs_views.print_both_boards(self.current_game.board,self.shooting_board.board)
-			bs_views.show_result("You've been hit!")
+			for boat in self.player_boats:
+				for coordinate in boat.coordinates:
+					if cell == coordinate:
+						name = boat.name
+						if boat.take_hit():
+							bs_views.sunk_ship()
+			bs_views.show_result("Your "+name+" has been hit!")
 		elif event == "miss":
 			bs_views.print_both_boards(self.current_game.board,self.shooting_board.board)
 			bs_views.show_result("He missed!")
@@ -88,6 +94,7 @@ class Battleship:
 	def turn(self):
 		bs_views.print_both_boards(self.current_game.board,self.shooting_board.board)
 		x,y = bs_views.take_shot()
+		cell = (x,y)
 		event = self.computer_board.take_turn(x,y)
 		if event == "hit":
 			self.shooting_board.board[y][x] = t.bright_red("X ")

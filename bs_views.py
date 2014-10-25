@@ -115,7 +115,8 @@ def take_shot():
 			y = 11
 	return x-1,y-1
 
-
+def sunk_ship(name):
+	input("The computer sunk your"+name+"!!!")
 
 
 ## BONUS

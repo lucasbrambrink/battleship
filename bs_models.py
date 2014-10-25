@@ -18,12 +18,13 @@ class Boat:
 		self.health = self.length
 		self.coordinates = []
 
-	def hit_boat(self):
+	def take_hit(self):
 		self.health -= 1
 		if self.health == 0:
-			return False
-		else:
 			return True
+		else:
+			return False
+			
 	def assign_coordinates(self,x,y):
 		self.coordinates.append((x,y))
 
