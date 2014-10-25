@@ -111,7 +111,7 @@ class GameBoard:
 		return build_specification[orientation]
 
 
-	## This method returns TRUE if you CANT place the boat
+	## This method returns TRUE if it CANT place the boat
 	def improper_boat_check(self,boat_length,x,y,orientation_array):
 		test_board_array = self.board
 		x -= 1
