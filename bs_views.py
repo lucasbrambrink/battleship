@@ -113,7 +113,7 @@ def take_shot():
 			y = int(y)
 		except:
 			y = 11
-	return x,y
+	return x-1,y-1
 
 
 

@@ -56,8 +56,11 @@ class AI:
 		self.array_successes.append(success)
 
 	def place_boats(self,board,remaining_boats): ##board is object
+		print(board)
 		## get ready for some recursion
 		if len(remaining_boats) == 0:
+			print("TIMESTAMP")
+			print (board)
 			return board
 		else:
 			boat = Boat(remaining_boats[0][:-1]) ## simply take the first one 
@@ -71,8 +74,7 @@ class AI:
 					remaining_boats.remove(boat.name+"1")
 				except:
 					remaining_boats.remove(boat.name+"2")
-			else:
-				self.place_boats(board,remaining_boats)
+			self.place_boats(board,remaining_boats)
 
 
 
@@ -122,7 +124,7 @@ class GameBoard:
 	def place_boat(self,boat,x,y,orientation): ##must be boat object
 		build_specification = {"left":[0,-1,"> ","< ","H "],"right":[0,1,"< ","> ","I "],"up":[-1,0,"V ","A ","H "],"down":[1,0,"A ","V ","H "]}
 		length = boat.length
-		x_cell,y_cell = (x-1),(y-1)
+		x_cell,y_cell = (x),(y)
 		while length > 0:
 			if length == boat.length:
 				self.board[y_cell][x_cell] = t.yellow(build_specification[orientation][2])
@@ -143,10 +145,8 @@ class GameBoard:
 	## This method returns TRUE if it CANT place the boat
 	def improper_boat_check(self,boat_length,x,y,orientation_array):
 		test_board_array = self.board
-		x -= 1
-		y -= 1
 		while boat_length > 0:
-			if x < 0 or x > 10 or y < 0 or y > 10:
+			if x < 0 or x > 9 or y < 0 or y > 9:
 				return 'outside_scope'
 			elif test_board_array[y][x] != t.blue("~ "):
 				return 'not_water'
