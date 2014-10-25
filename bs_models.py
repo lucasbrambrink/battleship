@@ -1,5 +1,6 @@
 ## BATTLESHIP MODELS ##
 import datetime
+import random
 from blessings import Terminal
 t = Terminal()
 
@@ -35,13 +36,10 @@ class AI:
 	def take_turn(self):
 		cell = self._random_cell()
 		if len(self.tries) != 0:
-			i = 0
-			while i < len(self.tries):
-				if self.tries[i] == cell:
-					new_cell = self._random_cell()
-					i = 0
-				else:
-					i += 1
+			for prev_try in self.tries:
+				if prev_try == cell:
+					self.take_turn()
+
 		if len(self.array_successes) != 0:
 			for i in range(0,len(self.array_successes)):
 				try_this = self.array_successes[i].check_periphery() 
@@ -59,9 +57,10 @@ class Success:
 		self.periphery = []
 
 	def check_periphery(self):
-		if len(self.periphery) < 9:
-			tries = {"1": (-1,-1),"2":(-1,0),"3":(-1,1),"4":(0,1),"5":(1,1),"6":(0,1),"7":(-1,1),"8":(0,-1)}
-			attempt = str(random.randint(len(self.periphery),8))
+		if len(self.periphery) < 4:
+			# 1 is up, 2 is right, 3 is down, 4 is left
+			tries = {"1": (-1,0),"2":(0,1),"3":(1,0),"4":(0,-1)}
+			attempt = str(random.randint(len(self.periphery),4))
 			return tries[attempt]
 		return None
 

@@ -11,6 +11,7 @@ class Controller:
 		self.current_game = None
 		self.shooting_board = None
 		self.ai_board = None
+		self.computer = None
 
 	def sign_in(self):
 		name = bs_views.sign_in()
@@ -41,8 +42,8 @@ class Controller:
 		self.shooting_board.make_board()
 		self.ai_board.make_board()
 
-		##Initialize AI
-		computer = bs_models.AI()
+		##Initialize AI              (...spooky. don't worry, he's not 777)
+		self.computer = bs_models.AI()
 
 
 
@@ -51,6 +52,8 @@ class Controller:
 		##Start Game:
 		array = ["cruiser1","cruiser2","destroyer1","destroyer2","submarine1","aircraftcarrier1"]
 		#self.place_all_boats(array)
+		
+
 		##Run Game:
 		self.run_game()
 
@@ -60,18 +63,22 @@ class Controller:
 	def run_game(self):
 		while True:
 			self.turn()
-			
-
-
+			self.ai_turn()
 
 
 	def ai_turn(self):
-		bs_views.print_both_boards(self.current_game.board,self.shooting_board.board)
-		cell = (11,11)
-		while cell[0] > 9 or cell[0] < 0 or cell[1] > 9 or cell[1] < 0:
-			cell = computer.take_turn()
-		if self.current_game.take_turn() == 'duplicate':
-			print("OMG")
+		cell = self.computer.take_turn()
+		event = self.current_game.take_turn(cell[1],cell[0])
+		if event == "hit":
+			bs_views.print_both_boards(self.current_game.board,self.shooting_board.board)
+			bs_views.show_result("You've been hit!")
+		elif event == "miss":
+			bs_views.print_both_boards(self.current_game.board,self.shooting_board.board)
+			bs_views.show_result("He missed!")
+		else:
+			bs_views.show_result("You already tried there!")
+			self.turn()
+		
 
 
 	def turn(self):
@@ -88,7 +95,7 @@ class Controller:
 			bs_views.show_result("You already tried there!")
 			self.turn()
 
-	## use of recursion --> passing in updated array each time until base-case is reached
+	## use of recursion --> passing in updated array until base-case is reached
 	def place_all_boats(self,remaining_boats):
 		if len(remaining_boats) == 0:
 			bs_views.print_both_boards(self.current_game.board,self.shooting_board.board)
