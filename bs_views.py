@@ -52,13 +52,13 @@ def place_boat(boat_name):
 	present = "\n\nYou are placing %s on the board\n" % (boat_name)
 	print(present)
 	x,y,orientation = 11,11,None
-	while x > 10 or x < 0:
+	while x > 10 or x < 1:
 		x = input("X Coordinate: ")
 		try:
 			x = int(x)
 		except:
 			x = 11
-	while y > 10 or y < 0:
+	while y > 10 or y < 1:
 		y = input("Y Coordinate: ")
 		try:
 			y = int(y)
@@ -101,13 +101,13 @@ def placed_all_boats():
 def take_shot():
 	print("Now take a shot at your opponent!")
 	x,y = 11,11
-	while x > 10 or x < 0:
+	while x > 10 or x < 1:
 		x = input("X Coordinate: ")
 		try:
 			x = int(x)
 		except:
 			x = 11
-	while y > 10 or y < 0:
+	while y > 10 or y < 1:
 		y = input("Y Coordinate: ")
 		try:
 			y = int(y)

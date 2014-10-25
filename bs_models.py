@@ -12,16 +12,9 @@ class Boat:
 	def __init__(self,name):
 		length_values = {"cruiser": 2, "destroyer": 3, "submarine": 4, "aircraftcarrier": 5}
 		self.name = name
-		i = 0
 		for key in length_values:
 			if name == key:
 				self.length = length_values[name]
-			else:
-				i += 1
-		if i != 3:
-			print("OH NO!!")
-			print(name)
-			quit()
 		self.health = self.length
 
 	def hit_boat(self):
