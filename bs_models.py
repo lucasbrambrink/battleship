@@ -70,7 +70,6 @@ class AI:
 			if test_boat == "pass":
 				## actually update the board
 				board.place_boat(boat,x,y,orientation)
-				board.boat_list.append((x,y))
 				try:
 					remaining_boats.remove(boat.name+"1")
 				except:
@@ -107,7 +106,7 @@ class GameBoard:
 	def __init__(self,size=10):
 		self.size = size
 		self.board = None
-		self.boat_list = None
+		self.boat_list = []
 
 	def make_board(self):
 		self.board = []
@@ -117,10 +116,9 @@ class GameBoard:
 				row.append(t.blue("~ "))
 			self.board.append(row)
 
-	def place_boat(self,boat,x,y,orientation): ##must be boat object
+	def place_boat(self,boat,x_cell,y_cell,orientation): ##must be boat object
 		build_specification = {"left":[0,-1,"> ","< ","H "],"right":[0,1,"< ","> ","I "],"up":[-1,0,"V ","A ","H "],"down":[1,0,"A ","V ","H "]}
 		length = boat.length
-		x_cell,y_cell = (x),(y)
 		while length > 0:
 			if length == boat.length:
 				self.board[y_cell][x_cell] = t.yellow(build_specification[orientation][2])
@@ -128,10 +126,11 @@ class GameBoard:
 				self.board[y_cell][x_cell] = t.yellow(build_specification[orientation][3])
 			else:
 				self.board[y_cell][x_cell] = t.yellow(build_specification[orientation][-1])
-			self.boat_list.append((y_cell,x_cell))
+			boat.assign_coordinates(x_cell,y_cell)
 			length -= 1
 			y_cell += int(build_specification[orientation][0])
 			x_cell += int(build_specification[orientation][1])
+		self.boat_list.append(boat)
 		return True
 
 	def get_orientation_array(self,orientation):

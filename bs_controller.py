@@ -54,14 +54,27 @@ class Battleship:
 		array = ["cruiser1","cruiser2","destroyer1","destroyer2","submarine1","aircraftcarrier1"]
 		self.computer.place_boats(self.computer_board,array)
 		
+
 		## [2.] Player places boats
-		array = ["cruiser1","cruiser2","destroyer1","destroyer2","submarine1","aircraftcarrier1"]
-		self.place_all_boats(array)
-		#self.computer.place_boats(self.current_game,array)
+		self.decide_boat_placement()
+
+
 		## [3.] Initalize Turn-Based Game
+		#print(len(self.current_game.boat_list),len(self.computer_board.boat_list))
+		for item in self.current_game.boat_list:
+			print(item.name)
+		#print(self.current_game.boat_list)
 		self.run_game()
 
 
+
+	def decide_boat_placement(self):
+		array = ["cruiser1","cruiser2","destroyer1","destroyer2","submarine1","aircraftcarrier1"]
+		decision = bs_views.prompt_boat_placement()
+		if decision == 1:
+			self.place_all_boats(array)
+		else:
+			self.computer.place_boats(self.current_game,array)
 
 
 	def run_game(self):
@@ -75,7 +88,7 @@ class Battleship:
 		event = self.current_game.take_turn(cell[1],cell[0])
 		if event == "hit":
 			bs_views.print_both_boards(self.current_game.board,self.shooting_board.board)
-			for boat in self.player_boats:
+			for boat in self.current_game.boat_list:
 				for coordinate in boat.coordinates:
 					if cell == coordinate:
 						name = boat.name
@@ -99,12 +112,11 @@ class Battleship:
 		if event == "hit":
 			self.shooting_board.board[y][x] = t.bright_red("X ")
 			bs_views.print_both_boards(self.current_game.board,self.shooting_board.board)
-			for boat in self.computer.boats:
+			for boat in self.computer_board.boat_list:
 				for coordinate in boat.coordinates:
 					if cell == coordinate:
-						print("here we are!!")
 						if boat.take_hit():
-							bs_views.sunk_opponent(boat.name)
+							bs_views.sunk_opponent_ship(boat.name)
 			bs_views.show_result("He's been hit!")
 		elif event == "miss":
 			self.shooting_board.take_turn(x,y)
@@ -132,7 +144,6 @@ class Battleship:
 				## actually update the board
 				bs_views.print_both_boards(self.current_game.board,self.shooting_board.board)
 				self.current_game.place_boat(boat,x,y,orientation)
-				self.current_game.boat_list.append(boat)
 				try:
 					remaining_boats.remove(boat.name+"1")
 				except:

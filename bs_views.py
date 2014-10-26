@@ -70,6 +70,23 @@ def place_boat(boat_name):
 			""")
 	return x-1,y-1,orientation
 
+def prompt_boat_placement():
+	clear_screen()
+	response = input("""         Would you like to place your boats yourself,\n         or have them randomly placed on the board for you?
+
+		[1] Place them myself
+		[2] Place them for me
+
+		[3] Exit\n""")
+	if response == "1" or response.lower() == "myself" or response.lower() == "me" or response.lower() == "place them myself":
+		return 1
+	elif response == "2" or response.lower() == "random" or response.lower() == "for me" or response.lower() == "place them for me":
+		return 2
+	elif response == "3" or response.lower() == "exit":
+		quit()
+	else:
+		prompt_boat_placement()
+
 def ask_boat(array):
 	print("\nYour Arsenal:\n")
 	for item in array:
