@@ -95,13 +95,9 @@ class Battleship:
 							bs_views.sunk_ship(boat.name)
 						else:
 							bs_views.hit_ship(boat.name)
-		elif event == "miss":
-			bs_views.print_both_boards(self.current_game.board,self.shooting_board.board)
-			bs_views.show_result("He missed!")
 		else:
-			bs_views.show_result("You already tried there!")
-			self.turn()
-		
+			bs_views.print_both_boards(self.current_game.board,self.shooting_board.board)
+			bs_views.show_result("He missed!")		
 
 
 	def turn(self):

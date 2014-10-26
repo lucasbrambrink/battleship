@@ -52,7 +52,9 @@ class AI:
 				try_this = self.array_successes[i].check_periphery() 
 				if try_this != None:
 					self.array_successes[i].periphery.append(try_this)
+					self.tries.append(try_this)
 					return try_this
+		self.tries.append(cell)
 		return cell
 
 	def accept_success(self,success): ##receives as object
