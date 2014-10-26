@@ -102,6 +102,7 @@ class Battleship:
 			for boat in self.computer.boats:
 				for coordinate in boat.coordinates:
 					if cell == coordinate:
+						print("here we are!!")
 						if boat.take_hit():
 							bs_views.sunk_opponent(boat.name)
 			bs_views.show_result("He's been hit!")
