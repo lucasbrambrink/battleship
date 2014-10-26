@@ -141,6 +141,24 @@ def sunk_ship(name):
 def sunk_opponent_ship(name):
 	input("You sunk the computer's "+name+"!!!!")
 
+def end_game_win():
+	clear_screen()
+	input("""
+
+		Congratulations! You beat the powerful AI!
+
+		His ships have been vanquished!""")
+
+def end_game_loss():
+	clear_screen()
+	input("""
+
+		All your ships have been smashed! 
+
+		You are drowning in the ocean. You are drowning....
+
+		The game is over!""")
+
 
 ## BONUS
 

@@ -91,7 +91,7 @@ class Battleship:
 							bs_views.sunk_ship(boat.name)
 							self.current_game.sunken_ships.append(boat)
 							if len(self.current_game.sunken_ships) == len(self.current_game.boat_list):
-								self.end_game_win_ai() 
+								self.end_game('loss') 
 						else:
 							bs_views.hit_ship(boat.name)
 		else:
@@ -114,7 +114,7 @@ class Battleship:
 							bs_views.sunk_opponent_ship(boat.name)
 							self.computer_board.sunken_ships.append(boat)
 							if len(self.computer_board.sunken_ships) == len(self.computer_board.boat_list):
-								self.end_game_win_player()
+								self.end_game('win')
 						else:
 							bs_views.show_result("He's been hit!")
 		elif event == "miss":
