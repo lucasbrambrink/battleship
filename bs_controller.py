@@ -94,6 +94,7 @@ class Battleship:
 								self.end_game('loss') 
 						else:
 							bs_views.hit_ship(boat.name)
+							self.computer.accept_success(bs_models.Success(cell))
 		else:
 			bs_views.print_both_boards(self.current_game.board,self.shooting_board.board)
 			bs_views.show_result("He missed!")		
@@ -150,6 +151,13 @@ class Battleship:
 				except:
 					remaining_boats.remove(boat.name+"2")
 			self.place_all_boats(remaining_boats)
+
+	def end_game(self,result):
+		if result == 'win':
+			bs_views.end_game_win()
+		else:	
+			bs_views.end_game_loss()
+
 
 
 			

@@ -42,17 +42,26 @@ class AI:
 
 	def take_turn(self): ## This logic is the heart of the AI
 		cell = self._random_cell()
-
+		print("This is the beginning of his turn")
 		## this is the I in AI
 		for success in self.array_successes:  ##successes are objects
+			in_line_cell = self.check_in_line(success)
+			if in_line_cell != None:
+				print("This is an inline cell",in_line_cell)
+				return in_line_cell
 			try_this = success.check_periphery() 
+			print("this is success cell",success.cell)
+			print("this is build spec for above cell",try_this)
 			if try_this != None:
 				new_x = success.cell[0] + try_this[0]
 				new_y = success.cell[1] + try_this[1]
 				new_cell = (new_x,new_y)
 				success.periphery.append(new_cell)
-				cell = try_this ##redefine cell for post-processing checks
-		
+				if new_x > 9 or new_x < 0 or new_y > 9 or new_y < 0: ##deal with boundary case by adding to list regardless, effectively treating it as a fail
+					print("out of bounds")
+					self.take_turn() ##start again with periphery appended
+				cell = new_cell ##redefine cell for post-processing checks
+				print("this is cell before repetition check",cell)
 		## make sure AI has not tried this cell before: 
 		for previous_try in self.tries:
 			if previous_try == cell:
@@ -82,15 +91,30 @@ class AI:
 					remaining_boats.remove(boat.name+"2")
 			self.place_boats(board,remaining_boats)
 
+	def check_in_line(self,success):
+		tries = {"1": (-1,0),"2":(0,1),"3":(1,0),"4":(0,-1)}
+		for i in range(1,4):
+			x_cell = success.cell[0] + tries[str(i)][0]
+			y_cell = success.cell[1] + tries[str(i)][1]
+			test_cell = (x_cell,y_cell)
+			for other_success in self.array_successes:
+				if other_success == success:
+					continue
+				if other_success.cell == test_cell: ## if true, this means cells align
+					## first thing that needs to happen is to tell current success cell that it has done its job
+					success.accept_completion()
+					test_cell[0] += tries[str(i)][0]
+					test_cell[1] += tries[str(i)][1] ## simply extend build by one cycle
+					return test_cell
+		return None
+
+
+
 
 class Success: ## for the AI, we turn a successful cell (i.e. hit) into an object
 	def __init__(self, cell):
 		self.cell = cell ##tuple of location
-		self.in_line = [] ## list of tuples
 		self.periphery = [] ## list of tuples
-
-	def check_in_line(self):
-		pass
 
 	def check_periphery(self):
 		if len(self.periphery) < 4:
@@ -99,6 +123,10 @@ class Success: ## for the AI, we turn a successful cell (i.e. hit) into an objec
 			attempt = str(random.randint(len(self.periphery)+1,4))
 			return tries[attempt]
 		return None
+
+	def accept_completion(self):
+		for i in range(0,3): ## might only need 3 cycles, but 4 makes double sure
+			self.periphery.append('fake')
 
 
 
