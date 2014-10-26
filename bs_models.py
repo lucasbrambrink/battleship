@@ -24,7 +24,7 @@ class Boat:
 			return True
 		else:
 			return False
-			
+
 	def assign_coordinates(self,x,y):
 		self.coordinates.append((x,y))
 
@@ -32,7 +32,6 @@ class AI:
 	def __init__(self):
 		self.tries = []
 		self.array_successes = []
-		self.boats = []
 
 	def _random_cell(self):
 		return (random.randint(0,9),random.randint(0,9))
@@ -71,8 +70,7 @@ class AI:
 			if test_boat == "pass":
 				## actually update the board
 				board.place_boat(boat,x,y,orientation)
-				boat.assign_coordinates(x,y)
-				self.boats.append(boat)
+				board.boat_list.append((x,y))
 				try:
 					remaining_boats.remove(boat.name+"1")
 				except:
@@ -109,6 +107,7 @@ class GameBoard:
 	def __init__(self,size=10):
 		self.size = size
 		self.board = None
+		self.boat_list = None
 
 	def make_board(self):
 		self.board = []
@@ -129,7 +128,7 @@ class GameBoard:
 				self.board[y_cell][x_cell] = t.yellow(build_specification[orientation][3])
 			else:
 				self.board[y_cell][x_cell] = t.yellow(build_specification[orientation][-1])
-			boat.coordinates.append((y_cell,x_cell))
+			self.boat_list.append((y_cell,x_cell))
 			length -= 1
 			y_cell += int(build_specification[orientation][0])
 			x_cell += int(build_specification[orientation][1])

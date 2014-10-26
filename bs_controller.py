@@ -116,7 +116,6 @@ class Battleship:
 
 	## use of recursion --> passing in updated array until base-case is reached
 	def place_all_boats(self,remaining_boats):
-		print(self.player_boats)
 		if len(remaining_boats) == 0:
 			bs_views.print_both_boards(self.current_game.board,self.shooting_board.board)
 			bs_views.placed_all_boats()
@@ -133,7 +132,7 @@ class Battleship:
 				## actually update the board
 				bs_views.print_both_boards(self.current_game.board,self.shooting_board.board)
 				self.current_game.place_boat(boat,x,y,orientation)
-				self.player_boats.append(boat)
+				self.current_game.boat_list.append(boat)
 				try:
 					remaining_boats.remove(boat.name+"1")
 				except:
