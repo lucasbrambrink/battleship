@@ -47,11 +47,11 @@ class AI:
 				if prev_try == cell:
 					self.take_turn()
 
-		if len(self.array_successes) != 0:
-			for i in range(0,len(self.array_successes)):
-				try_this = self.array_successes[i].check_periphery() 
+		if len(self.array_successes) != 0: ##successes are objects
+			for success in self.array_successes:
+				try_this = success.check_periphery() 
 				if try_this != None:
-					self.array_successes[i].periphery.append(try_this)
+					success.periphery.append(try_this)
 					self.tries.append(try_this)
 					return try_this
 		self.tries.append(cell)
@@ -82,7 +82,11 @@ class AI:
 class Success:
 	def __init__(self, cell):
 		self.cell = None
+		self.in_line = []
 		self.periphery = []
+
+	def check_in_line(self):
+		pass
 
 	def check_periphery(self):
 		if len(self.periphery) < 4:

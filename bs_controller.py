@@ -60,10 +60,6 @@ class Battleship:
 
 
 		## [3.] Initalize Turn-Based Game
-		#print(len(self.current_game.boat_list),len(self.computer_board.boat_list))
-		for item in self.current_game.boat_list:
-			print(item.name)
-		#print(self.current_game.boat_list)
 		self.run_game()
 
 
@@ -123,8 +119,10 @@ class Battleship:
 			bs_views.show_result("You already tried there!")
 			self.turn()
 
-	## use of recursion --> passing in updated array until base-case is reached
 	def place_all_boats(self,remaining_boats):
+	## use of recursion --> passing in updated array until base-case is reached
+	## decided to leave logic in controller bc it directly depends on user input and the separation would only make life difficult when errors are encountered
+
 		if len(remaining_boats) == 0:
 			bs_views.print_both_boards(self.current_game.board,self.shooting_board.board)
 			bs_views.placed_all_boats()
