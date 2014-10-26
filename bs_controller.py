@@ -85,7 +85,7 @@ class Battleship:
 
 	def ai_turn(self):
 		cell = self.computer.take_turn()
-		event = self.current_game.take_turn(cell[1],cell[0])
+		event = self.current_game.take_turn(cell[0],cell[1])
 		if event == "hit":
 			bs_views.print_both_boards(self.current_game.board,self.shooting_board.board)
 			for boat in self.current_game.boat_list:
@@ -94,7 +94,7 @@ class Battleship:
 						if boat.take_hit():
 							bs_views.sunk_ship(boat.name)
 						else:
-							bs_views.show_result("Your "+boat.name+" has been hit!")
+							bs_views.hit_ship(boat.name)
 		elif event == "miss":
 			bs_views.print_both_boards(self.current_game.board,self.shooting_board.board)
 			bs_views.show_result("He missed!")

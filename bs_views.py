@@ -132,11 +132,14 @@ def take_shot():
 			y = 11
 	return x-1,y-1
 
+def hit_ship(name):
+	input("Your "+name+"has been hit!!")
+
 def sunk_ship(name):
-	input("The computer sunk your"+name+"!!!")
+	input("The computer sunk your "+name+"!!!")
 
 def sunk_opponent_ship(name):
-	input("You sunk the computer's"+name+"!!!!")
+	input("You sunk the computer's "+name+"!!!!")
 
 
 ## BONUS
