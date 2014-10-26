@@ -133,7 +133,7 @@ def take_shot():
 	return x-1,y-1
 
 def hit_ship(name):
-	input("Your "+name+"has been hit!!")
+	input("Your "+name+" has been hit!!")
 
 def sunk_ship(name):
 	input("The computer sunk your "+name+"!!!")

@@ -89,6 +89,9 @@ class Battleship:
 					if cell == coordinate:
 						if boat.take_hit():
 							bs_views.sunk_ship(boat.name)
+							self.current_game.sunken_ships.append(boat)
+							if len(self.current_game.sunken_ships) == len(self.current_game.boat_list):
+								self.end_game_win_ai() 
 						else:
 							bs_views.hit_ship(boat.name)
 		else:
@@ -109,6 +112,9 @@ class Battleship:
 					if cell == coordinate:
 						if boat.take_hit():
 							bs_views.sunk_opponent_ship(boat.name)
+							self.computer_board.sunken_ships.append(boat)
+							if len(self.computer_board.sunken_ships) == len(self.computer_board.boat_list):
+								self.end_game_win_player()
 						else:
 							bs_views.show_result("He's been hit!")
 		elif event == "miss":

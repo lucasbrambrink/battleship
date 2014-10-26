@@ -40,20 +40,24 @@ class AI:
 		orientations = {"1":"up","2":"down","3":"right","4":"left"}
 		return orientations[str(random.randint(1,4))]
 
-	def take_turn(self):
+	def take_turn(self): ## This logic is the heart of the AI
 		cell = self._random_cell()
-		if len(self.tries) != 0:
-			for prev_try in self.tries:
-				if prev_try == cell:
-					self.take_turn()
 
-		if len(self.array_successes) != 0: ##successes are objects
-			for success in self.array_successes:
-				try_this = success.check_periphery() 
-				if try_this != None:
-					success.periphery.append(try_this)
-					self.tries.append(try_this)
-					return try_this
+		## this is the I in AI
+		for success in self.array_successes:  ##successes are objects
+			try_this = success.check_periphery() 
+			if try_this != None:
+				new_x = success.cell[0] + try_this[0]
+				new_y = success.cell[1] + try_this[1]
+				new_cell = (new_x,new_y)
+				success.periphery.append(new_cell)
+				cell = try_this ##redefine cell for post-processing checks
+		
+		## make sure AI has not tried this cell before: 
+		for previous_try in self.tries:
+			if previous_try == cell:
+				self.take_turn() ##simply start again (this ensures the check occurs again)
+
 		self.tries.append(cell)
 		return cell
 
@@ -79,11 +83,11 @@ class AI:
 			self.place_boats(board,remaining_boats)
 
 
-class Success:
+class Success: ## for the AI, we turn a successful cell (i.e. hit) into an object
 	def __init__(self, cell):
-		self.cell = None
-		self.in_line = []
-		self.periphery = []
+		self.cell = cell ##tuple of location
+		self.in_line = [] ## list of tuples
+		self.periphery = [] ## list of tuples
 
 	def check_in_line(self):
 		pass
@@ -92,7 +96,7 @@ class Success:
 		if len(self.periphery) < 4:
 			# 1 is up, 2 is right, 3 is down, 4 is left
 			tries = {"1": (-1,0),"2":(0,1),"3":(1,0),"4":(0,-1)}
-			attempt = str(random.randint(len(self.periphery),4))
+			attempt = str(random.randint(len(self.periphery)+1,4))
 			return tries[attempt]
 		return None
 
@@ -113,6 +117,7 @@ class GameBoard:
 		self.size = size
 		self.board = None
 		self.boat_list = []
+		self.sunken_ships = []
 
 	def make_board(self):
 		self.board = []
