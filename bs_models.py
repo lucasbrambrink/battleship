@@ -361,10 +361,14 @@ class Games(Model):
 
 
 class Player(Model):
-	def __init__(self,name):
-		self.name = name
+	def __init__(self):
+		self.name = None
 		self.games_won = 0
 		self.latest_sign_in = datetime.datetime.now()
+
+	def accept_name(self,name):
+		self.name = name
+
 
 
 

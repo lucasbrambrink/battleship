@@ -25,7 +25,8 @@ class Battleship:
 		if returning_player != "Not in database":
 			bs_views.welcome_back(returning_player.name)
 		else:
-			self.player = bs_models.Player(name=name_player)
+			self.player = bs_models.Player()
+			self.player.accept_name(name_player)
 			bs_views.initial_visit(name_player)
 			self.player.save()
 		self.main_menu()
@@ -223,7 +224,9 @@ class Battleship:
 				return None
 
 	def view_leaderboard(self):
-		leaders = bs_models.fetch_leaderboard()
+		leaders = bs_models.Player().all()
+		print(leaders)
+		print(self.player)
 		bs_views.print_leader_board(leaders)
 		self.main_menu()
 

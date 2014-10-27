@@ -183,6 +183,14 @@ def end_game_loss():
 		The game is over!""")
 
 
+def print_leader_board(leaders):
+	clear_screen()
+
+	print("\n\n\n")
+	for leader in leaders:
+		print(leader.name+"  :  "+str(leader.games_won))
+	input("")
+
 ## BONUS
 
 def stall():
