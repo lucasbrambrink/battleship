@@ -45,19 +45,19 @@ class AI:
 			
 			## this is the I in AI
 			for success in self.array_successes:  ##successes are objects
+				
+				## check existence for neighboring success
 				in_line_cell = self.check_in_line(success)
 				if in_line_cell != None:
-					unique = True
-					for previous_try in self.tries:
-						if previous_try == in_line_cell:
-							unique = False
-					if unique:
-						success.directions_explored = True
-						self.tries.append(in_line_cell)
-						return in_line_cell
+					print("unique in_line_cell sent from ",success.cell)
+					self.tries.append(in_line_cell)
+					print("in line cell is: ",in_line_cell)
+					return in_line_cell
 				
+				
+				## feel out waters
 				try_this = success.check_periphery() 
-				if try_this != None:
+				while try_this != None:
 					new_x = success.cell[0] + try_this[0]
 					new_y = success.cell[1] + try_this[1]
 					new_cell = (new_x,new_y)
@@ -67,12 +67,14 @@ class AI:
 							unique = False
 					if new_x > 9 or new_x < 0 or new_y > 9 or new_y < 0: ##deal with boundary case by adding to list regardless, effectively treating it as a fail
 						unique = False
-					if unique:	
+					if unique:
+						print("feel_out_surroundings cell: ",new_cell)	
 						success.periphery.append(new_cell)
 						self.tries.append(new_cell)
 						return new_cell
+					try_this = success.check_periphery()
 
-			## make sure AI has not tried this cell before: 
+			## if both conditions fail, simply revert to unique random
 			cell = self._random_cell()
 			unique = True
 			for previous_try in self.tries:
@@ -113,8 +115,9 @@ class AI:
 			y_cell = success.cell[1] + tries[str(i)][1]
 			test_cell = (x_cell,y_cell)
 			for other_success in self.array_successes:
-				if other_success.cell == test_cell and len(other_success.directions_explored) > 0: ## if true, this means cells align
+				if other_success.cell == test_cell: ## if true, this means cells align
 					if len(success.directions_explored) == 1:
+						print(success.cell," has only one direction explored")
 						output_x = success.cell[0] - tries[str(i)][0]
 						output_y = success.cell[1] - tries[str(i)][1] ## simply extend build by one cycle
 						output_cell = (output_x,output_y)
@@ -123,7 +126,10 @@ class AI:
 						for previous_try in self.tries:
 							if previous_try == output_cell:
 								unique = False
+						if output_cell[0] > 9 or output_cell[0] < 0 or output_cell[1] > 9 or output_cell[1] < 0: ##deal with boundary case by adding to list regardless, effectively treating it as a fail
+							unique = False
 						if unique:
+							print("check in line returned ",output_cell)
 							success.accept_direction("+1") ##tell fringe success that it has been extended
 							success.accept_completion() ## tell current success
 							return output_cell
@@ -137,8 +143,16 @@ class AI:
 						for previous_try in self.tries:
 							if previous_try == output_cell:
 								unique = False
+						if output_cell[0] > 9 or output_cell[0] < 0 or output_cell[1] > 9 or output_cell[1] < 0: ##deal with boundary case by adding to list regardless, effectively treating it as a fail
+							unique = False
 						if unique:
-							other_success.directions_explored.append("+1","complete now") ##tell fringe success that it has been extended
+							print("check in line returned ",output_cell)
+							other_success.directions_explored.append("+1")
+							other_success.directions_explored.append("completed") ##this cell is now sufficently explored
+							## the cell can no longer be len==1
+							
+							##tell fringe success that it has been extended
+							success.directions_explored.append("+1")
 							success.accept_completion() ## tell current success
 							return output_cell
 		return None
