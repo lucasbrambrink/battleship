@@ -15,10 +15,18 @@ class Battleship:
 		self.player_boats = []
 
 	def sign_in(self):
-		name = bs_views.sign_in()
-		self.name = name
+		name_player = bs_views.sign_in()
+		self.name = name_player
 		##check if in database.
-			## if not : name = bs_models.Player(name)
+		check_statement = "name="+name_player
+		returning_player = bs_models.Player.get(check_statement)
+		print(returning_player)
+		if returning_player.name.lower() != "not in database":
+			bs_views.welcome_back(self.name)
+		else:
+			name = bs_models.Player(name=name_player)
+			bs_views.initial_visit(name_player)
+			name.save()
 		self.main_menu()
 	
 	def main_menu(self):
@@ -164,6 +172,7 @@ class Battleship:
 
 	## ALL DB LOGIC
 	def save_game(self,*args):
+		pass
 
 
 

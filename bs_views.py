@@ -24,6 +24,20 @@ def sign_out():
 
 ## MENU VIEWS
 
+def welcome_back(name):
+	clear_screen()
+	input("""
+
+		Welcome back """+name+"!!!!!\n")
+
+def initial_visit(name):
+	clear_screen()
+	input("""
+
+		This must be your first time here, """+name+""".
+
+		But not to worry, it's easy and fun!\n""")
+
 def main_menu():
 	clear_screen()
 	print("""Main Menu:
