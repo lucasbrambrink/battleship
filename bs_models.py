@@ -342,11 +342,9 @@ class Success(Model): ## for the AI, we turn a successful cell (i.e. hit) into a
 class Player(Model):
 	def __init__(self,name):
 		self.name = name
+		self.games_won = 0
 		self.latest_sign_in = datetime.datetime.now()
 
-	def fetch_ongoing_games(self):
-		##check database for games with Uid
-		pass
 
 
 class GameBoard(Model):
