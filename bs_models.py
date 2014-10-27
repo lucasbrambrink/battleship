@@ -41,34 +41,61 @@ class AI:
 		return orientations[str(random.randint(1,4))]
 
 	def take_turn(self): ## This logic is the heart of the AI
-		cell = self._random_cell()
-		print("This is the beginning of his turn")
-		## this is the I in AI
-		for success in self.array_successes:  ##successes are objects
-			in_line_cell = self.check_in_line(success)
-			if in_line_cell != None:
-				print("This is an inline cell",in_line_cell)
-				return in_line_cell
-			try_this = success.check_periphery() 
-			print("this is success cell",success.cell)
-			print("this is build spec for above cell",try_this)
-			if try_this != None:
-				new_x = success.cell[0] + try_this[0]
-				new_y = success.cell[1] + try_this[1]
-				new_cell = (new_x,new_y)
-				success.periphery.append(new_cell)
-				if new_x > 9 or new_x < 0 or new_y > 9 or new_y < 0: ##deal with boundary case by adding to list regardless, effectively treating it as a fail
-					print("out of bounds")
-					self.take_turn() ##start again with periphery appended
-				cell = new_cell ##redefine cell for post-processing checks
-				print("this is cell before repetition check",cell)
-		## make sure AI has not tried this cell before: 
-		for previous_try in self.tries:
-			if previous_try == cell:
-				self.take_turn() ##simply start again (this ensures the check occurs again)
+		while True:
+			cell = self._random_cell()
+			unique = True
+			print("This is the beginning of his turn")
+			## this is the I in AI
+			for success in self.array_successes:  ##successes are objects
+				print("beginning of success loop")
+				print("this is the success in question:",success.cell)
+				print("success status as inline_cell:",success.been_in_line)
+				in_line_cell = self.check_in_line(success)
+				print("inline cell is: ",in_line_cell)
+				if in_line_cell != None:
+					unique = True
+					for previous_try in self.tries:
+						if previous_try == in_line_cell:
+							print("failed in-loop repetition check")
+							unique = False
+					if unique:
+						print("This is an inline cell post repetition check",in_line_cell)
+						success.been_in_line = True
+						self.tries.append(in_line_cell)
+						return in_line_cell
+				
+				try_this = success.check_periphery() 
+				print("this is success cell",success.cell)
+				print("this is success periphery: ",success.periphery)
+				print("this is build spec for above cell",try_this)
+				if try_this != None:
+					new_x = success.cell[0] + try_this[0]
+					new_y = success.cell[1] + try_this[1]
+					new_cell = (new_x,new_y)
+					unique = True
+					for previous_try in self.tries:
+						if previous_try == new_cell:
+							print("failed in-loop repetition check")
+							unique = False
+					if new_x > 9 or new_x < 0 or new_y > 9 or new_y < 0: ##deal with boundary case by adding to list regardless, effectively treating it as a fail
+						print("out of bounds")
+						unique = False
+					if unique:	
+						cell = new_cell ##redefine cell for post-processing checks
+						success.periphery.append(new_cell)
+						print("this is cell from build",new_cell)
+						self.tries.append(new_cell)
+						return new_cell
 
-		self.tries.append(cell)
-		return cell
+			## make sure AI has not tried this cell before: 
+			for previous_try in self.tries:
+				if previous_try == cell:
+					print("failed repetition check")
+					unique = False
+			if unique:
+				self.tries.append(cell)
+				print("random cell: ",cell)
+				return cell
 
 	def accept_success(self,success): ##receives as object
 		self.array_successes.append(success)
@@ -92,20 +119,34 @@ class AI:
 			self.place_boats(board,remaining_boats)
 
 	def check_in_line(self,success):
+		if success.been_in_line:
+			return None
 		tries = {"1": (-1,0),"2":(0,1),"3":(1,0),"4":(0,-1)}
-		for i in range(1,4):
+		for i in range(1,5):
+			print("line check",i)
 			x_cell = success.cell[0] + tries[str(i)][0]
 			y_cell = success.cell[1] + tries[str(i)][1]
 			test_cell = (x_cell,y_cell)
 			for other_success in self.array_successes:
-				if other_success == success:
-					continue
-				if other_success.cell == test_cell: ## if true, this means cells align
-					## first thing that needs to happen is to tell current success cell that it has done its job
+				if other_success.cell == test_cell and other_success.been_in_line == False: ## if true, this means cells align
+					## first thing that needs to happen is to tell current success cell that it has done its job (render inert)
 					success.accept_completion()
-					test_cell[0] += tries[str(i)][0]
-					test_cell[1] += tries[str(i)][1] ## simply extend build by one cycle
-					return test_cell
+					print("found aligning cell")
+					output_x = x_cell + tries[str(i)][0]
+					output_y = y_cell + tries[str(i)][1] ## simply extend build by one cycle
+					output_cell = (output_x,output_y)
+					unique = True
+					for previous_try in self.tries:
+						if previous_try == output_cell:
+							print("failed check_in_line___in-loop repetition check")
+							
+
+							unique = False
+					if unique:
+						print("this is cell for output:", output_cell)
+						return output_cell
+					else:
+						continue
 		return None
 
 
@@ -115,17 +156,18 @@ class Success: ## for the AI, we turn a successful cell (i.e. hit) into an objec
 	def __init__(self, cell):
 		self.cell = cell ##tuple of location
 		self.periphery = [] ## list of tuples
+		self.been_in_line = False
 
 	def check_periphery(self):
 		if len(self.periphery) < 4:
 			# 1 is up, 2 is right, 3 is down, 4 is left
 			tries = {"1": (-1,0),"2":(0,1),"3":(1,0),"4":(0,-1)}
-			attempt = str(random.randint(len(self.periphery)+1,4))
+			attempt = str(random.randint(1,4)) ## if this produces duplicate, logic will repeat
 			return tries[attempt]
 		return None
 
 	def accept_completion(self):
-		for i in range(0,3): ## might only need 3 cycles, but 4 makes double sure
+		for i in range(0,5): ## might only need 3 cycles, but 4 makes double sure
 			self.periphery.append('fake')
 
 
