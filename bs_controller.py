@@ -21,12 +21,12 @@ class Battleship:
 		check_statement = "name="+name_player
 		returning_player = bs_models.Player.get(check_statement)
 		print(returning_player)
-		if returning_player.name.lower() != "not in database":
-			bs_views.welcome_back(self.name)
+		if returning_player != "Not in database":
+			bs_views.welcome_back(returning_player.name)
 		else:
-			name = bs_models.Player(name=name_player)
+			player = bs_models.Player(name=name_player)
 			bs_views.initial_visit(name_player)
-			name.save()
+			player.save()
 		self.main_menu()
 	
 	def main_menu(self):
@@ -113,7 +113,7 @@ class Battleship:
 		bs_views.print_both_boards(self.current_game.board,self.shooting_board.board)
 		x,y = bs_views.take_shot()
 		if x == "exit":
-			self.question__to_save()
+			self.question_to_save()
 		cell = (x,y)
 		event = self.computer_board.take_turn(x,y)
 		if event == "hit":
@@ -173,7 +173,7 @@ class Battleship:
 
 	def question_to_save(self):
 		response = bs_views.question_to_save()
-		if response:
+		if response.lower() == 'yes' or response.lower() == 'y':
 			self.save_game()
 			self.main_menu()
 		else:
@@ -184,11 +184,27 @@ class Battleship:
 
 	## ALL DB LOGIC
 	def save_game(self):
+		player_id = self.fetch_id(name,"name",self.name)
+		self.current_game.player_id = int(player_id)
 		self.current_game.save()
+
+		self.shooting_board.player_id = int(player_id)
 		self.shooting_board.save()
+		
+		ai_id = len(name.all())
 		self.ai_board.save()
 		self.computer.save()
 		the_game = bs_models.games()
+
+	
+	def fetch_id(self,objct,unique_attribute,value):
+		query = '\''+unique_attribute+"="+value+'\''
+		test = objct.get(query)
+		if test is object:
+			return test.id
+		else:
+			return None
+
 
 
 

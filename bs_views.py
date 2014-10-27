@@ -134,7 +134,7 @@ def take_shot():
 	x,y = 11,11
 	while x > 10 or x < 1:
 		x = input("X Coordinate: ")
-		if x.isalpha() and x.lower() == "exit":
+		if x == "exit":
 			return "exit","exit"
 		try:
 			x = int(x)
@@ -142,7 +142,7 @@ def take_shot():
 			x = 11
 	while y > 10 or y < 1:
 		y = input("Y Coordinate: ")
-		if x.isalpha() and x.lower() == "exit":
+		if x == "exit":
 			return "exit","exit"
 		try:
 			y = int(y)
@@ -158,6 +158,11 @@ def sunk_ship(name):
 
 def sunk_opponent_ship(name):
 	input("You sunk the computer's "+name+"!!!!")
+
+def question_to_save():
+	clear_screen()
+	return input("""
+		Would you like to save the game?\n""")
 
 def end_game_win():
 	clear_screen()

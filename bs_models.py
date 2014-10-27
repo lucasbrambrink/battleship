@@ -173,6 +173,7 @@ class Boat(Model):
 				self.length = length_values[name]
 		self.health = self.length
 		self.coordinates = []
+		self.board_id = 0
 
 	def take_hit(self):
 		self.health -= 1
@@ -188,6 +189,7 @@ class AI(Model):
 	def __init__(self):
 		self.tries = []
 		self.array_successes = []
+		self.game_id = 0
 
 	def _random_cell(self):
 		return (random.randint(0,9),random.randint(0,9))
@@ -321,8 +323,10 @@ class Success(Model): ## for the AI, we turn a successful cell (i.e. hit) into a
 		self.cell = cell ##tuple of location
 		self.periphery = [] ## list of tuples
 		self.directions_explored = []
+		self.ai_id = 0
 
 	def check_periphery(self):
+		import random
 		if len(self.periphery) < 4:
 			# 1 is up, 2 is right, 3 is down, 4 is left
 			tries = {"1": (-1,0),"2":(0,1),"3":(1,0),"4":(0,-1)}
@@ -358,6 +362,8 @@ class GameBoard(Model):
 		self.board = None
 		self.boat_list = []
 		self.sunken_ships = []
+		self.player_id = 0
+		self.game_id = 0
 
 	def make_board(self):
 		self.board = []
