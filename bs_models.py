@@ -4,8 +4,9 @@ import random
 from blessings import Terminal
 t = Terminal()
 
-##metaprogramming
-## AI 
+## DB
+import sqlite3
+
 
 
 class Boat:
