@@ -337,6 +337,11 @@ class Success(Model): ## for the AI, we turn a successful cell (i.e. hit) into a
 		for i in range(0,5): ## might only need 3 cycles, but 4 makes double sure
 			self.periphery.append('fake')
 
+class Games(Model):
+	def __init__(self, player_id, ai_id):
+		self.player_id = player_id
+		self.ai_id = ai_id
+		self.time_created = datetime.datetime.now()
 
 
 class Player(Model):

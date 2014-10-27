@@ -12,7 +12,7 @@ class DB:
 		c = conn.cursor()	
 
 		c.execute("""DROP TABLE IF EXISTS Player""")
-		c.execute("""DROP TABLE IF EXISTS games""")
+		c.execute("""DROP TABLE IF EXISTS Games""")
 		c.execute("""DROP TABLE IF EXISTS GameBoard""")
 		c.execute("""DROP TABLE IF EXISTS AI""")
 		c.execute("""DROP TABLE IF EXISTS Boat""")
@@ -22,7 +22,7 @@ class DB:
 		c.execute("""CREATE TABLE IF NOT EXISTS Player
 			(id INTEGER, name TEXT, games_won INTEGER, latest_sign_in TEXT, PRIMARY KEY ('id'))""")
 
-		c.execute("""CREATE TABLE IF NOT EXISTS games
+		c.execute("""CREATE TABLE IF NOT EXISTS Games
 			(id INTEGER, player_id INTEGER, ai_id INTEGER, time_created TEXT, PRIMARY KEY ('id'))""")
 
 		c.execute("""CREATE TABLE IF NOT EXISTS GameBoard

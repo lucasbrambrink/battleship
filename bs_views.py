@@ -134,12 +134,16 @@ def take_shot():
 	x,y = 11,11
 	while x > 10 or x < 1:
 		x = input("X Coordinate: ")
+		if x.isalpha() and x.lower() == "exit":
+			return "exit","exit"
 		try:
 			x = int(x)
 		except:
 			x = 11
 	while y > 10 or y < 1:
 		y = input("Y Coordinate: ")
+		if x.isalpha() and x.lower() == "exit":
+			return "exit","exit"
 		try:
 			y = int(y)
 		except:

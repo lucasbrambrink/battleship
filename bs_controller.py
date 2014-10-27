@@ -112,6 +112,8 @@ class Battleship:
 	def turn(self):
 		bs_views.print_both_boards(self.current_game.board,self.shooting_board.board)
 		x,y = bs_views.take_shot()
+		if x == "exit":
+			self.question__to_save()
 		cell = (x,y)
 		event = self.computer_board.take_turn(x,y)
 		if event == "hit":
@@ -164,18 +166,29 @@ class Battleship:
 	def end_game(self,result):
 		if result == 'win':
 			bs_views.end_game_win()
+			name.games_won += 1
 		else:	
 			bs_views.end_game_loss()
 		self.main_menu()
 
+	def question_to_save(self):
+		response = bs_views.question_to_save()
+		if response:
+			self.save_game()
+			self.main_menu()
+		else:
+			quit()
+
+
 
 
 	## ALL DB LOGIC
-	def save_game(self,*args):
-		pass
-
-
-
+	def save_game(self):
+		self.current_game.save()
+		self.shooting_board.save()
+		self.ai_board.save()
+		self.computer.save()
+		the_game = bs_models.games()
 
 
 
