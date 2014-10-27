@@ -18,6 +18,7 @@ class Battleship:
 		name = bs_views.sign_in()
 		self.name = name
 		##check if in database.
+			## if not : name = bs_models.Player(name)
 		self.main_menu()
 	
 	def main_menu(self):

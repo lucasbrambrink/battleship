@@ -20,7 +20,7 @@ class DB:
 
 
 		c.execute("""CREATE TABLE IF NOT EXISTS players
-			(id INTEGER, name TEXT, games_won INTEGER, time_created TEXT, PRIMARY KEY ('id'))""")
+			(id INTEGER, name TEXT, games_won INTEGER, latest_sign_in TEXT, PRIMARY KEY ('id'))""")
 
 		c.execute("""CREATE TABLE IF NOT EXISTS games
 			(id INTEGER, player_id INTEGER, ai_id INTEGER, time_created TEXT, PRIMARY KEY ('id'))""")
@@ -37,8 +37,7 @@ class DB:
 		c.execute("""CREATE TABLE IF NOT EXISTS successes
 			(id INTEGER, ai_id INTEGER, cell TEXT, periphery TEXT, directions_explored TEXT, PRIMARY KEY ('id'))""")
 		
-		
-
+	
 		conn.commit()
 		c.close()
 

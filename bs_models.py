@@ -6,6 +6,7 @@ t = Terminal()
 
 ## DB
 import sqlite3
+db = "battleship.db"
 
 
 
@@ -257,7 +258,163 @@ class GameBoard:
 			return 'duplicate'
 
 		
+class Model:
+	def __init__(self,**kwargs):
+		for key in kwargs:
+			setattr(self,key,kwargs[key])
 
+	@classmethod
+	def all(self):
+		table_name = self.__name__
+
+		conn = sqlite3.connect(db)
+		c = conn.cursor()
+
+		##Get the column name by selecting first index of c.description 
+		query = "SELECT * FROM %s;" % (table_name)
+		c.execute(query)
+		col_names = list(map(lambda x:x[0], c.description))
+
+		data = c.fetchall() ##selects all the data
+		conn.commit()
+		conn.close()
+
+
+		list_objects = []
+		for row in data:
+			new_object = object.__new__(self)
+			for i in range(0,len(col_names)):
+				setattr(new_object,col_names[i],row[i])
+			list_objects.append(new_object)		
+		return list_objects
+
+
+	@classmethod
+	def get(self,argument):
+		proprty,instance = argument.split("=")
+		instance = '\''+instance+'\''
+		class_name = self.__name__
+		
+		conn = sqlite3.connect(db)
+		c = conn.cursor()
+
+
+		query = "SELECT * FROM %s WHERE %s.%s IS %s LIMIT 1;" % (class_name,class_name,proprty,instance)
+		c.execute(query)
+		
+		col_names = list(map(lambda x:x[0], c.description))
+		data = c.fetchall()
+		conn.close()
+		
+		if len(data) == 0:
+			return "Not in database"
+		else:
+			new_object = object.__new__(self)
+			for i in range(0,len(col_names)):
+				setattr(new_object,col_names[i],data[0][i])
+
+		return new_object
+
+	@classmethod
+	def filter(self,argument):
+		proprty,instance = argument.split("=")
+		instance = '\''+instance+'\''
+		class_name = self.__name__
+		
+		conn = sqlite3.connect(db)
+		c = conn.cursor()
+
+
+		query = "SELECT * FROM %s WHERE %s.%s IS %s;" % (class_name,class_name,proprty,instance)
+		c.execute(query)
+		
+		col_names = list(map(lambda x:x[0], c.description))
+		data = c.fetchall()
+		conn.close()
+		
+		if len(data) == 0:
+			return "Not in database"
+		else:
+			new_object = object.__new__(self)
+			for i in range(0,len(col_names)):
+				setattr(new_object,col_names[i],data[0][i])
+
+		return new_object
+
+	@classmethod
+	def create(self,**dwargs):
+		object = self(**dwargs)
+		object.save()
+		return object
+
+
+	@classmethod
+	def delete(self,argument):
+		class_name = self.__name__
+		conn = sqlite3.connect(db)
+		c = conn.cursor()
+
+		query = "SELECT * FROM %s;" % (class_name)
+		c.execute(query)
+		col_names = list(map(lambda x:x[0], c.description))
+		data = c.fetchall()
+		task_id = None
+		for i in range(0,len(data)):
+			if argument == str(data[i][1]):
+				task_id = int(data[i][0])
+		if task_id is None:
+			print ("Not in database")
+			return False
+
+
+		del_query = "DELETE FROM %s WHERE id IS '%s';" % (class_name,task_id)
+		c.execute(del_query)
+		
+		conn.commit()
+		c.close()
+
+		return True
+
+
+	##INSTANCE METHOD
+	def save(self):
+		class_name = type(self).__name__
+		conn = sqlite3.connect(db)
+		c = conn.cursor()
+
+		query = "SELECT * FROM %s;" % (class_name) ##class name specifies table
+		c.execute(query)
+		col_names = list(map(lambda x:x[0], c.description))
+
+		##Test if already in DB
+		test_query = "SELECT * FROM %s WHERE %s IS (?)" % (class_name,col_names[1])
+		c.execute(test_query,(self.__dict__[col_names[1]],))
+		if len(c.fetchall()) == 0:
+			test = True ##NOT in DB
+		else:
+			test = False
+		# It strikes me as a bad way to do this...
+
+
+		for i in range(1,len(col_names)):
+			attribute = col_names[i]
+			if hasattr(self,attribute):
+				value = self.__dict__[attribute]
+			else: 
+				if i == 4 or i == 5: ##This is to avoid datatype error
+					value = 0
+				else:
+					value = "None" 
+			if test and i == 1: ##create new row
+				query = "INSERT INTO %s (%s) VALUES (?)" % (class_name,attribute)
+				c.execute(query,(value,))
+			else: ##update existing row if already in DB
+				query = "UPDATE %s SET %s = (?) WHERE %s is (?)" % (class_name,attribute,col_names[1])
+				c.execute(query,(value,self.__dict__[col_names[1]],))
+		
+		
+		conn.commit()
+		c.close()
 
 
 
