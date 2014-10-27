@@ -157,6 +157,8 @@ class Battleship:
 			bs_views.end_game_win()
 		else:	
 			bs_views.end_game_loss()
+		self.main_menu()
+
 
 
 
