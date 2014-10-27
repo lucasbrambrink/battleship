@@ -191,6 +191,10 @@ class AI(Model):
 		self.array_successes = []
 		self.game_id = 0
 
+	def convert_arrays(self):
+		self.array_successes = str(self.array_successes)
+		self.tries = str(self.tries)
+
 	def _random_cell(self):
 		return (random.randint(0,9),random.randint(0,9))
 
@@ -212,8 +216,10 @@ class AI(Model):
 					print("in line cell is: ",in_line_cell)
 					return in_line_cell
 				
+			for success in self.array_successes:	
 				
 				## feel out waters
+				i = 0 ## exit index
 				try_this = success.check_periphery() 
 				while try_this != None:
 					new_x = success.cell[0] + try_this[0]
@@ -230,7 +236,14 @@ class AI(Model):
 						success.periphery.append(new_cell)
 						self.tries.append(new_cell)
 						return new_cell
+					print("cell in question is ",new_cell)
+					print(try_this)
+					if i == 50:
+						break
+					i += 1
 					try_this = success.check_periphery()
+					
+
 
 			## if both conditions fail, simply revert to unique random
 			cell = self._random_cell()
@@ -326,7 +339,6 @@ class Success(Model): ## for the AI, we turn a successful cell (i.e. hit) into a
 		self.ai_id = 0
 
 	def check_periphery(self):
-		import random
 		if len(self.periphery) < 4:
 			# 1 is up, 2 is right, 3 is down, 4 is left
 			tries = {"1": (-1,0),"2":(0,1),"3":(1,0),"4":(0,-1)}

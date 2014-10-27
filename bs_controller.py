@@ -13,6 +13,7 @@ class Battleship:
 		self.ai_board = None
 		self.computer = None
 		self.player_boats = []
+		self.player = None
 
 	def sign_in(self):
 		name_player = bs_views.sign_in()
@@ -24,9 +25,9 @@ class Battleship:
 		if returning_player != "Not in database":
 			bs_views.welcome_back(returning_player.name)
 		else:
-			player = bs_models.Player(name=name_player)
+			self.player = bs_models.Player(name=name_player)
 			bs_views.initial_visit(name_player)
-			player.save()
+			self.player.save()
 		self.main_menu()
 	
 	def main_menu(self):
@@ -36,7 +37,7 @@ class Battleship:
 		if proceed == "2":
 			pass
 		if proceed == "3":
-			pass
+			self.view_leaderboard()
 		if proceed == "4":
 			bs_views.sign_out()
 			quit()
@@ -166,7 +167,7 @@ class Battleship:
 	def end_game(self,result):
 		if result == 'win':
 			bs_views.end_game_win()
-			name.games_won += 1
+			self.player.games_won += 1
 		else:	
 			bs_views.end_game_loss()
 		self.main_menu()
@@ -183,27 +184,49 @@ class Battleship:
 
 
 	## ALL DB LOGIC
-	def save_game(self):
-		player_id = self.fetch_id(name,"name",self.name)
-		self.current_game.player_id = int(player_id)
+	def save_game(self): ##needs a lot of conversions of data types
+		player_id = self.fetch_id(self.player,"name",self.name)
+		if player_id != None:
+			self.current_game.player_id = int(player_id)
+		
+		self.convert_board_arrays(self.current_game)
 		self.current_game.save()
-
-		self.shooting_board.player_id = int(player_id)
+		
+		if player_id != None:
+			self.shooting_board.player_id = int(player_id)
+		
+		self.convert_board_arrays(self.shooting_board)
 		self.shooting_board.save()
 		
-		ai_id = len(name.all())
-		self.ai_board.save()
+		self.computer.convert_arrays()
 		self.computer.save()
-		the_game = bs_models.games()
 
-	
+		# ai_id = self.fetch_id(self.computer,"tries",self.computer.tries)
+		# if ai_id != None:
+		# 	self.ai_board.player_id = ai_id
+		self.convert_board_arrays(self.ai_board)
+		self.ai_board.save()
+		the_game = bs_models.Games(player_id,0)
+
+	def convert_board_arrays(self,board):
+		board.board = str(board.board)
+		board.boat_list = str(board.boat_list)
+		board.sunken_ships = str(board.sunken_ships)
+
 	def fetch_id(self,objct,unique_attribute,value):
 		query = '\''+unique_attribute+"="+value+'\''
-		test = objct.get(query)
-		if test is object:
-			return test.id
-		else:
-			return None
+		if objct != None:
+			test = objct.get(query)
+			if test != None:
+				return test.id
+			else:
+				return None
+
+	def view_leaderboard(self):
+		leaders = bs_models.fetch_leaderboard()
+		bs_views.print_leader_board(leaders)
+		self.main_menu()
+
 
 
 
