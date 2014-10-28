@@ -43,7 +43,7 @@ def main_menu():
 	print("""Main Menu:
 
 		[1] Start a New Game
-		[2] Resume Last Game
+		[2] Battle the AI!
 		[3] View High Scores
 		[4] Exit
 

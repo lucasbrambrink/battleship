@@ -12,6 +12,7 @@ class Battleship:
 		self.shooting_board = None
 		self.ai_board = None
 		self.computer = None
+		self.komputer = None
 		self.player_boats = []
 		self.player = None
 
@@ -36,7 +37,7 @@ class Battleship:
 		if proceed == "1":
 			self.start_new_game()
 		if proceed == "2":
-			pass
+			self.battle_ai()
 		if proceed == "3":
 			self.view_leaderboard()
 		if proceed == "4":
@@ -73,6 +74,22 @@ class Battleship:
 		## [3.] Initalize Turn-Based Game
 		self.run_game()
 
+	def battle_ai(self):
+		self.computer = bs_models.AI()
+		self.komputer = bs_models.AI()
+		self.computer_board = bs_models.GameBoard()
+		self.computer_board.make_board()
+		self.komputer_board = bs_models.GameBoard()
+		self.komputer_board.make_board()
+		
+		array = ["cruiser1","cruiser2","destroyer1","destroyer2","submarine1","aircraftcarrier1"]
+		self.computer.place_boats(self.computer_board,array)
+		array = ["cruiser1","cruiser2","destroyer1","destroyer2","submarine1","aircraftcarrier1"]
+		self.komputer.place_boats(self.komputer_board,array)
+		
+		while True:
+			self.com_ai_turn()
+			self.kom_ai_turn()
 
 
 	def decide_boat_placement(self):
@@ -108,8 +125,43 @@ class Battleship:
 							self.computer.accept_success(bs_models.Success(cell))
 		else:
 			bs_views.print_both_boards(self.current_game.board,self.shooting_board.board)
-			bs_views.show_result("He missed!")		
+			bs_views.show_result("He missed!")	
 
+	def kom_ai_turn(self):
+		cell = self.komputer.take_turn()
+		event = self.computer_board.take_turn(cell[0],cell[1])
+		if event == "hit":
+			bs_views.print_both_boards(self.computer_board.board,self.komputer_board.board)
+			for boat in self.computer_board.boat_list:
+				for coordinate in boat.coordinates:
+					if cell == coordinate:
+						if boat.take_hit():
+							self.computer_board.sunken_ships.append(boat)
+							if len(self.computer_board.sunken_ships) == len(self.computer_board.boat_list):
+								self.end_game('loss') 
+						else:
+							self.computer.accept_success(bs_models.Success(cell))
+		else:
+			bs_views.print_both_boards(self.computer_board.board,self.komputer_board.board)
+			bs_views.show_result("He missed!")	
+
+	def com_ai_turn(self):
+		cell = self.computer.take_turn()
+		event = self.komputer_board.take_turn(cell[0],cell[1])
+		if event == "hit":
+			bs_views.print_both_boards(self.computer_board.board,self.komputer_board.board)
+			for boat in self.komputer_board.boat_list:
+				for coordinate in boat.coordinates:
+					if cell == coordinate:
+						if boat.take_hit():
+							self.komputer_board.sunken_ships.append(boat)
+							if len(self.komputer_board.sunken_ships) == len(self.komputer_board.boat_list):
+								self.end_game('loss') 
+						else:
+							self.computer.accept_success(bs_models.Success(cell))
+		else:
+			bs_views.print_both_boards(self.computer_board.board,self.komputer_board.board)
+			bs_views.show_result("He missed!")
 
 	def turn(self):
 		bs_views.print_both_boards(self.current_game.board,self.shooting_board.board)
