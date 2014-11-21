@@ -12,7 +12,7 @@ def sign_in():
 	return input("""
 		Welcome to Battleship!!
 
-		Who is singing in right now?\n
+		Who is signing in right now?\n
 		""")
 
 def sign_out():
